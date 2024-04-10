@@ -2,11 +2,12 @@ import { Form, useLoaderData } from "@remix-run/react";
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import type { FunctionComponent } from "react";
 
-import type { ContactRecord } from "../data";
+import type { ContactRecord } from "../data.server";
 
-import { getContact } from "../data";
+import { getContact } from "../data.server";
 import invariant from "tiny-invariant";
 
+// loader carrega as informações da API
 export async function loader({params} : LoaderFunctionArgs ) {
     invariant(params.contactId, "Missing contactId param");
     const contactId = params.contactId;
