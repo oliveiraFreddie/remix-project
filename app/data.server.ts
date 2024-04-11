@@ -96,8 +96,22 @@ export async function getContact(id: string) {
   }
 }
 
-export async function updateContact(id: string, updates: ContactMutation) {
-  
+// Make the fetch put request to Strapi endpoint
+export async function updateContactById(id: string, updates: ContactMutation) {
+  try {
+    const response = await fetch(url + '/api/contacts/' + id, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({data: {...updates}})
+    });
+    const responseData = await response.json();
+    const flattenAttributesData = flattenAttributes(responseData.data);
+    return flattenAttributesData;
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 export async function deleteContact(id: string) {
