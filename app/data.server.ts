@@ -67,8 +67,22 @@ export async function getContacts(query?: string | null) {
   }
 }
 
-export async function createEmptyContact() {
-  
+// Função que envia os dados do form para o Strapi
+export async function createContact(data: any) {
+  try {
+    const response = await fetch(url + '/api/contacts', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({data: {...data}})
+    });
+    const responseData = await response.json();
+    const flattenAttributesData = flattenAttributes(responseData.data);
+    return flattenAttributesData;
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 export async function getContact(id: string) {
