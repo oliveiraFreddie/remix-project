@@ -9,7 +9,9 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
-  Link
+  Link,
+  useRouteError,
+  isRouteErrorResponse
 } from "@remix-run/react";
 
 import appStylesHref from "./app.css?url";
@@ -23,6 +25,32 @@ export const links: LinksFunction = () => [
 export async function loader() {
   const contacts = await getContacts();
   return json(contacts);
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  return (
+    <html>
+      <head>
+        <title>Oops!</title>
+        <Meta />
+        <Links />
+      </head>
+      <body className="root-error">
+        <h1>
+          Oops, It's game over.
+        </h1>
+        <p>
+        {isRouteErrorResponse(error)
+            ? `${error.status} ${error.statusText}`
+            : error instanceof Error
+            ? error.message
+            : "Unknown Error"}
+        </p>
+        <Scripts />
+      </body>
+    </html>
+  );
 }
 
 export default function App() {

@@ -56,6 +56,8 @@ export function flattenAttributes(data: any): any {
 
 const url = process.env.STRAPI_URL || 'http://127.0.0.1:1337';
 
+/* API CALLS */
+
 export async function getContacts(query?: string | null) {
   try {
     const response = await fetch(url + '/api/contacts');
@@ -67,7 +69,7 @@ export async function getContacts(query?: string | null) {
   }
 }
 
-// Função que envia os dados do form para o Strapi
+// Make the fetch post request to Strapi endpoint
 export async function createContact(data: any) {
   try {
     const response = await fetch(url + '/api/contacts', {
@@ -115,10 +117,19 @@ export async function updateContactById(id: string, updates: ContactMutation) {
 }
 
 export async function deleteContact(id: string) {
-  
+  try {
+    const response = await fetch(url + '/api/contacts/' + id, {
+      method: "DELETE",
+    });
+    const data = await response.json();
+    const flattenAttributesData = flattenAttributes(data.data);
+    return flattenAttributesData;
+  } catch (error) {
+    console.log(error)
+  }
 }
 
- const data  = [
+const data  = [
   {
     avatar:
       "https://sessionize.com/image/124e-400o400o2-wHVdAuNaxi8KJrgtN3ZKci.jpg",
