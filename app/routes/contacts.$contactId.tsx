@@ -1,19 +1,27 @@
 import { Form, useLoaderData, useRouteError, isRouteErrorResponse, useNavigate } from "@remix-run/react";
-import { json, type LoaderFunctionArgs } from "@remix-run/node";
+import { ActionFunctionArgs, json, type LoaderFunctionArgs } from "@remix-run/node";
 import type { FunctionComponent } from "react";
 
 import type { ContactRecord } from "../data.server";
 
-import { getContact } from "../data.server";
+import { getContact, updateContactById } from "../data.server";
 import invariant from "tiny-invariant";
 
 // loader information from API
 export async function loader({params} : LoaderFunctionArgs ) {
-    invariant(params.contactId, "Missing contactId param");
+    invariant(params.contactId, "Missing contactId param"); // funtion to check id
     const contactId = params.contactId;
     const contact = await getContact(contactId);
     if (!contact) throw new Response("Not Found", { status: 404});
     return json(contact);
+}
+
+export async function action({params, request} : ActionFunctionArgs) {
+  invariant(params.contactId, "Missing contactId param");
+  const formData = await request.formData();
+  return updateContactById(params.contactId, {
+    favorite: formData.get("favorite") === "true"
+  })
 }
 
 export function ErrorBoundary() {
@@ -111,7 +119,7 @@ const Favorite: FunctionComponent<{
             ? "Remove from favorites"
             : "Add to favorites"
         }
-        name="favorite"
+        name="favorite" // Action function get the data based on the name property, and updated
         value={favorite ? "false" : "true"}
       >
         {favorite ? "★" : "☆"}
